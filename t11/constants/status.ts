@@ -12,37 +12,37 @@ export const ORDER_STATUS_CONFIG: Record<
   PENDING: {
     label: "Chờ xử lý",
     variant: "warning",
-    badgeClass: "bg-amber-50 text-amber-700 border-amber-200",
+    badgeClass: "bg-amber-50 text-amber-700",
     description: "Đơn hàng mới tạo, đang chờ phê duyệt hoặc phân công.",
   },
   CONFIRMED: {
     label: "Đã xác nhận",
     variant: "info",
-    badgeClass: "bg-sky-50 text-sky-700 border-sky-200",
+    badgeClass: "bg-sky-50 text-sky-700 ",
     description: "Đơn hàng đã được xác nhận vật tư và lên kế hoạch sản xuất.",
   },
   IN_PROGRESS: {
     label: "Đang sản xuất",
     variant: "primary",
-    badgeClass: "bg-blue-50 text-blue-700 border-blue-200",
+    badgeClass: "bg-blue-50 text-blue-700 ",
     description: "Đang trong quá trình gia công và chế tạo tại xưởng.",
   },
   COMPLETED: {
     label: "Hoàn thành",
     variant: "success",
-    badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    badgeClass: "bg-emerald-50 text-emerald-700",
     description: "Đã gia công hoàn tất, chờ khách hàng nghiệm thu hoặc giao.",
   },
   DELIVERED: {
     label: "Đã bàn giao",
     variant: "secondary",
-    badgeClass: "bg-slate-100 text-slate-700 border-slate-300",
+    badgeClass: "bg-slate-100 text-slate-700 ",
     description: "Đã giao hàng và bàn giao thành công cho khách hàng.",
   },
   CANCELLED: {
     label: "Đã hủy",
     variant: "danger",
-    badgeClass: "bg-rose-50 text-rose-700 border-rose-200",
+    badgeClass: "bg-rose-50 text-rose-700 ",
     description: "Đơn hàng đã hủy bỏ do khách hoặc điều kiện kỹ thuật.",
   },
 };

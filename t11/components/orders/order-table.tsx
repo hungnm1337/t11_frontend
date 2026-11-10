@@ -279,7 +279,7 @@ export function OrderTable({
 
                     <TableCell>
                       <span
-                        className={`text-xs px-2.5 py-0.5 rounded border font-medium ${conf.badgeClass}`}
+                        className={`text-xs px-2.5 py-0.5 rounded font-medium ${conf.badgeClass}`}
                       >
                         {conf.label}
                       </span>
@@ -363,4 +363,3 @@ export function OrderTable({
     </div>
   );
 }
-

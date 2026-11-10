@@ -14,12 +14,12 @@ export function Badge({
   ...props
 }: BadgeProps) {
   const variantStyles = {
-    neutral: "bg-surface-muted text-text-secondary border-border",
-    success: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    warning: "bg-amber-50 text-amber-800 border-amber-200",
-    danger: "bg-rose-50 text-rose-700 border-rose-200",
-    info: "bg-sky-50 text-sky-700 border-sky-200",
-    primary: "bg-blue-50 text-blue-700 border-blue-200",
+    neutral: "bg-surface-muted text-text-secondary",
+    success: "bg-emerald-50 text-emerald-700",
+    warning: "bg-amber-50 text-amber-800",
+    danger: "bg-rose-50 text-rose-700",
+    info: "bg-sky-50 text-sky-700",
+    primary: "bg-blue-50 text-blue-700",
   };
 
   const dotStyles = {
@@ -34,7 +34,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium border select-none",
+        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium select-none",
         variantStyles[variant],
         className
       )}
