@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MANAGER
+  EMPLOYEE
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  DELIVERED
+  CANCELLED
+}
+
+enum InventoryTransactionType {
+  IMPORT
+  EXPORT
+  ADJUSTMENT
+}
+
+model User {
+  id           String   @id @default(uuid())
+  fullName     String
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  role         Role     @default(EMPLOYEE)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  assignedOrders        Order[]                @relation("OrderAssignedTo")
+  createdOrders         Order[]                @relation("OrderCreatedBy")
+  inventoryTransactions InventoryTransaction[]
+  statusHistories       OrderStatusHistory[]
+  activityLogs          ActivityLog[]
+
+  @@index([role, isActive])
+}
+
+model MaterialCategory {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  createdAt   DateTime   @default(now())
+  materials   Material[]
+}
+
+model Material {
+  id           String   @id @default(uuid())
+  materialCode String   @unique
+  name         String
+  categoryId   String
+  unit         String
+  quantity     Float    @default(0)
+  minQuantity  Float    @default(0)
+  unitPrice    Float    @default(0)
+  supplier     String?
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  category              MaterialCategory       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  inventoryTransactions InventoryTransaction[]
+  orderMaterials        OrderMaterial[]
+
+  @@index([materialCode])
+  @@index([categoryId])
+  @@index([quantity, minQuantity])
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  orderCode       String      @unique
+  customerName    String
+  customerPhone   String
+  customerAddress String?
+  description     String
+  quantity        Int         @default(1)
+  startDate       DateTime    @default(now())
+  expectedDate    DateTime
+  completedDate   DateTime?
+  status          OrderStatus @default(PENDING)
+  assignedToId    String?
+  createdById     String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  assignedTo            User?                  @relation("OrderAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdBy             User                   @relation("OrderCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  orderMaterials        OrderMaterial[]
+  inventoryTransactions InventoryTransaction[]
+  statusHistories       OrderStatusHistory[]
+
+  @@index([orderCode])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([createdAt])
+}
+
+model InventoryTransaction {
+  id              String                   @id @default(uuid())
+  transactionCode String                   @unique
+  materialId      String
+  orderId         String?
+  type            InventoryTransactionType
+  quantity        Float
+  unitPrice       Float?
+  note            String?
+  performedById   String
+  createdAt       DateTime                 @default(now())
+
+  material    Material @relation(fields: [materialId], references: [id], onDelete: Restrict)
+  order       Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  performedBy User     @relation(fields: [performedById], references: [id], onDelete: Restrict)
+
+  @@index([transactionCode])
+  @@index([materialId])
+  @@index([orderId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model OrderMaterial {
+  id               String   @id @default(uuid())
+  orderId          String
+  materialId       String
+  quantityRequired Float
+  quantityUsed     Float    @default(0)
+  createdAt        DateTime @default(now())
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Restrict)
+
+  @@unique([orderId, materialId])
+  @@index([orderId])
+  @@index([materialId])
+}
+
+model OrderStatusHistory {
+  id          String       @id @default(uuid())
+  orderId     String
+  oldStatus   OrderStatus?
+  newStatus   OrderStatus
+  changedById String
+  note        String?
+  createdAt   DateTime     @default(now())
+
+  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  changedBy User  @relation(fields: [changedById], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([createdAt])
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String
+  action      String
+  entityType  String
+  entityId    String
+  description String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
