@@ -9,14 +9,15 @@ It does not include mock records or seed data.
 
 ## Configuration
 
-Set `NEXT_PUBLIC_API_URL` to the API root, including `/api`. The browser calls
-this API directly, so the backend must allow the frontend origin through CORS:
+Set `API_URL` to the API root, including `/api`. This URL is embedded in the
+client bundle by `next.config.ts`, so it is public; the backend must allow the
+frontend origin through CORS:
 
 ```env
-NEXT_PUBLIC_API_URL="https://localhost:7017/api"
+API_URL="https://t11-backend.onrender.com/api"
 ```
 
-For local HTTPS development, ensure the API certificate is trusted by the browser.
+Restart the Next.js dev server after changing this value.
 
 ## Run locally
 
