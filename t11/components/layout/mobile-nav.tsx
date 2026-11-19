@@ -2,16 +2,11 @@
 
 import * as React from "react";
 import { NAVIGATION_ITEMS } from "@/constants/navigation";
-import { UserRole } from "@/types";
 import { NavLinks } from "./nav-links";
 import { Wrench, X, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface MobileNavProps {
-  userRole?: UserRole;
-}
-
-export function MobileNav({ userRole = "MANAGER" }: MobileNavProps) {
+export function MobileNav() {
   const [isOpen, setIsOpen] = React.useState(false);
 
   // Close on ESC
@@ -79,7 +74,6 @@ export function MobileNav({ userRole = "MANAGER" }: MobileNavProps) {
             <div className="flex-1 overflow-y-auto py-3">
               <NavLinks
                 items={NAVIGATION_ITEMS}
-                userRole={userRole}
                 onItemClick={() => setIsOpen(false)}
               />
             </div>

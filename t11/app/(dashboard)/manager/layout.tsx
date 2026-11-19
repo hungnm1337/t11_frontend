@@ -6,6 +6,6 @@ export default function ManagerLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <DashboardShell userRole="MANAGER">{children}</DashboardShell>;
+  return <DashboardShell>{children}</DashboardShell>;
 }
 

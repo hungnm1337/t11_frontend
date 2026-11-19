@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Workshop Management System - Quản lý xưởng cơ khí",
-  description: "Hệ thống quản lý hoạt động, đơn hàng, nguyên vật liệu và tiến độ sản xuất xưởng cơ khí.",
+  description: "Quản lý các danh mục dữ liệu qua API của hệ thống xưởng cơ khí.",
 };
 
 export default function RootLayout({

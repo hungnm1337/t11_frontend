@@ -1,0 +1,127 @@
+import { MasterDataDefinition, MasterDataResource } from "@/types/master-data";
+
+export const MASTER_DATA_DEFINITIONS: Record<
+  MasterDataResource,
+  MasterDataDefinition
+> = {
+  DoiTac: {
+    label: "Đối tác",
+    route: "/DoiTac",
+    idField: "maDoiTac",
+    nameField: "tenDoiTac",
+    fields: [
+      { key: "maDoiTac", label: "Mã đối tác", type: "text", required: true, maxLength: 20 },
+      { key: "tenDoiTac", label: "Tên đối tác", type: "text", required: true, maxLength: 200 },
+      { key: "loaiDoiTac", label: "Loại đối tác", type: "text", required: true, maxLength: 30 },
+      { key: "diaChi", label: "Địa chỉ", type: "textarea", maxLength: 300 },
+      { key: "soDienThoai", label: "Số điện thoại", type: "text", maxLength: 20 },
+      { key: "maSoThue", label: "Mã số thuế", type: "text", maxLength: 20 },
+      { key: "nguoiLienHe", label: "Người liên hệ", type: "text", maxLength: 100 },
+    ],
+  },
+  KhachHang: {
+    label: "Khách hàng",
+    route: "/KhachHang",
+    idField: "maKhachHang",
+    nameField: "tenKhachHang",
+    fields: [
+      { key: "maKhachHang", label: "Mã khách hàng", type: "text", required: true, maxLength: 20 },
+      { key: "tenKhachHang", label: "Tên khách hàng", type: "text", required: true, maxLength: 200 },
+      { key: "diaChi", label: "Địa chỉ", type: "textarea", maxLength: 300 },
+      { key: "soDienThoai", label: "Số điện thoại", type: "text", maxLength: 20 },
+      { key: "email", label: "Email", type: "text", maxLength: 100 },
+      { key: "maSoThue", label: "Mã số thuế", type: "text", maxLength: 20 },
+      { key: "nguoiLienHe", label: "Người liên hệ", type: "text", maxLength: 100 },
+      { key: "ghiChu", label: "Ghi chú", type: "textarea", maxLength: 500 },
+    ],
+  },
+  Kho: {
+    label: "Kho",
+    route: "/Kho",
+    idField: "maKho",
+    nameField: "tenKho",
+    fields: [
+      { key: "maKho", label: "Mã kho", type: "text", required: true, maxLength: 20 },
+      { key: "tenKho", label: "Tên kho", type: "text", required: true, maxLength: 200 },
+      { key: "loaiKho", label: "Loại kho", type: "text", required: true, maxLength: 30 },
+      { key: "diaChi", label: "Địa chỉ", type: "textarea", maxLength: 300 },
+      { key: "maDoiTacPhuTrach", label: "Đối tác phụ trách", type: "text", relation: "DoiTac", navigationField: "maDoiTacPhuTrachNavigationTenDoiTac" },
+      { key: "ghiChu", label: "Ghi chú", type: "textarea", maxLength: 500 },
+    ],
+  },
+  SanPham: {
+    label: "Sản phẩm",
+    route: "/SanPham",
+    idField: "maSanPham",
+    nameField: "tenSanPham",
+    fields: [
+      { key: "maSanPham", label: "Mã sản phẩm", type: "text", required: true, maxLength: 30 },
+      { key: "tenSanPham", label: "Tên sản phẩm", type: "text", required: true, maxLength: 200 },
+      { key: "chieuDaiSanPham", label: "Chiều dài sản phẩm", type: "number" },
+      { key: "maKhachHang", label: "Khách hàng", type: "text", relation: "KhachHang", navigationField: "maKhachHangNavigationTenKhachHang" },
+      { key: "moTa", label: "Mô tả", type: "textarea", maxLength: 500 },
+      { key: "trangThai", label: "Trạng thái", type: "text", required: true, maxLength: 20 },
+    ],
+  },
+  NguyenLieu: {
+    label: "Nguyên liệu",
+    route: "/NguyenLieu",
+    idField: "maNguyenLieu",
+    nameField: "tenNguyenLieu",
+    fields: [
+      { key: "maNguyenLieu", label: "Mã nguyên liệu", type: "text", required: true, maxLength: 50 },
+      { key: "tenNguyenLieu", label: "Tên nguyên liệu", type: "text", required: true, maxLength: 300 },
+      { key: "loaiNguyenLieu", label: "Loại nguyên liệu", type: "text", required: true, maxLength: 30 },
+      { key: "maSanPham", label: "Sản phẩm", type: "text", relation: "SanPham", navigationField: "maSanPhamNavigationTenSanPham" },
+      { key: "chieuDaiThanh", label: "Chiều dài thanh", type: "number" },
+      { key: "maNhaCungCap", label: "Nhà cung cấp", type: "text", relation: "DoiTac", navigationField: "maNhaCungCapNavigationTenDoiTac" },
+      { key: "ghiChu", label: "Ghi chú", type: "textarea", maxLength: 500 },
+    ],
+  },
+  BanThanhPham: {
+    label: "Bán thành phẩm",
+    route: "/BanThanhPham",
+    idField: "maBanThanhPham",
+    nameField: "tenBanThanhPham",
+    fields: [
+      { key: "maBanThanhPham", label: "Mã bán thành phẩm", type: "text", required: true, maxLength: 50 },
+      { key: "tenBanThanhPham", label: "Tên bán thành phẩm", type: "text", required: true, maxLength: 300 },
+      { key: "maSanPham", label: "Sản phẩm", type: "text", relation: "SanPham", navigationField: "maSanPhamNavigationTenSanPham" },
+      { key: "maNguyenLieuGoc", label: "Nguyên liệu gốc", type: "text", relation: "NguyenLieu", navigationField: "maNguyenLieuGocNavigationTenNguyenLieu" },
+      { key: "chieuDaiBanThanhPham", label: "Chiều dài bán thành phẩm", type: "number" },
+      { key: "heSoQuyDoi", label: "Hệ số quy đổi", type: "number" },
+      { key: "congDoanGiaCong", label: "Công đoạn gia công", type: "text", maxLength: 200 },
+      { key: "loaiGiaCong", label: "Loại gia công", type: "text", maxLength: 50 },
+      { key: "xuLyBeMat", label: "Xử lý bề mặt", type: "text", maxLength: 100 },
+      { key: "maDonViGiaCong", label: "Đơn vị gia công", type: "text", relation: "DoiTac", navigationField: "maDonViGiaCongNavigationTenDoiTac" },
+      { key: "donGiaGiaCong", label: "Đơn giá gia công", type: "number" },
+      { key: "trangThai", label: "Trạng thái", type: "text", required: true, maxLength: 20 },
+      { key: "ghiChu", label: "Ghi chú", type: "textarea", maxLength: 500 },
+    ],
+  },
+  DanhMucVatTu: {
+    label: "Danh mục vật tư",
+    route: "/DanhMucVatTu",
+    idField: "maVatTu",
+    nameField: "tenVatTu",
+    fields: [
+      { key: "maVatTu", label: "Mã vật tư", type: "text", required: true, maxLength: 50 },
+      { key: "tenVatTu", label: "Tên vật tư", type: "text", required: true, maxLength: 300 },
+      { key: "loaiVatTu", label: "Loại vật tư", type: "text", required: true, maxLength: 30 },
+      { key: "maSanPham", label: "Sản phẩm", type: "text", relation: "SanPham", navigationField: "maSanPhamNavigationTenSanPham" },
+      { key: "chieuDaiSanPham", label: "Chiều dài sản phẩm", type: "number" },
+      { key: "maNguyenLieu", label: "Nguyên liệu", type: "text", relation: "NguyenLieu", navigationField: "maNguyenLieuNavigationTenNguyenLieu" },
+      { key: "maBanThanhPham", label: "Bán thành phẩm", type: "text", relation: "BanThanhPham", navigationField: "maBanThanhPhamNavigationTenBanThanhPham" },
+      { key: "heSoQuyDoiTuThanhDai", label: "Hệ số quy đổi từ thanh dài", type: "number" },
+      { key: "nhomVatTu1", label: "Nhóm vật tư 1", type: "text", maxLength: 20 },
+      { key: "nhomVatTu2", label: "Nhóm vật tư 2", type: "text", maxLength: 20 },
+      { key: "donViTinh", label: "Đơn vị tính", type: "text", required: true, maxLength: 20 },
+      { key: "trangThai", label: "Trạng thái", type: "text", required: true, maxLength: 20 },
+      { key: "ghiChu", label: "Ghi chú", type: "textarea", maxLength: 500 },
+    ],
+  },
+};
+
+export const MASTER_DATA_RESOURCES = Object.keys(
+  MASTER_DATA_DEFINITIONS
+) as MasterDataResource[];
