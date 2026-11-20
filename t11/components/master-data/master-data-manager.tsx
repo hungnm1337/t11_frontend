@@ -558,6 +558,30 @@ export function MasterDataManager({ resource }: MasterDataManagerProps) {
                     </Select>
                   );
                 }
+                if (field.type === "select") {
+                  return (
+                    <Select
+                      key={field.key}
+                      label={`${field.label}${field.required ? " *" : ""}`}
+                      value={formData[field.key] ?? ""}
+                      error={errorMessage}
+                      disabled={isSubmitting}
+                      onChange={(event) =>
+                        setFormData((current) => ({
+                          ...current,
+                          [field.key]: event.target.value,
+                        }))
+                      }
+                    >
+                      <option value="">-- Chọn loại đối tác --</option>
+                      {(field.options ?? []).map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </Select>
+                  );
+                }
                 if (field.type === "textarea") {
                   return (
                     <label

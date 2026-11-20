@@ -12,7 +12,16 @@ export const MASTER_DATA_DEFINITIONS: Record<
     fields: [
       { key: "maDoiTac", label: "Mã đối tác", type: "text", required: true, maxLength: 20 },
       { key: "tenDoiTac", label: "Tên đối tác", type: "text", required: true, maxLength: 200 },
-      { key: "loaiDoiTac", label: "Loại đối tác", type: "text", required: true, maxLength: 30 },
+      {
+        key: "loaiDoiTac",
+        label: "Loại đối tác",
+        type: "select",
+        required: true,
+        options: [
+          { label: "Nội bộ", value: "Nội bộ" },
+          { label: "Nhà cung cấp", value: "Nhà cung cấp" },
+        ],
+      },
       { key: "diaChi", label: "Địa chỉ", type: "textarea", maxLength: 300 },
       { key: "soDienThoai", label: "Số điện thoại", type: "text", maxLength: 20 },
       { key: "maSoThue", label: "Mã số thuế", type: "text", maxLength: 20 },

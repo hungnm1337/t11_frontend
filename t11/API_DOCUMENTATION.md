@@ -70,7 +70,7 @@ Lỗi validation do `[ApiController]` có thể trả về `400` theo format `Va
 
 ## 3. Endpoint đang public
 
-Tất cả controller dưới đây kế thừa `CrudController<TEntity, string, TRequest, TResponse>`, nên có cùng bộ endpoint:
+Các controller resource dưới đây kế thừa `CrudController`, nên có cùng bộ endpoint:
 
 | Resource | Route | Request body | Response |
 |---|---|---|---|
@@ -82,7 +82,34 @@ Tất cả controller dưới đây kế thừa `CrudController<TEntity, string,
 | Nguyên liệu | `/api/NguyenLieu` | `NguyenLieuRequest` | `NguyenLieuResponse` |
 | Sản phẩm | `/api/SanPham` | `SanPhamRequest` | `SanPhamResponse` |
 
+CRUD riêng cho các entity phiếu và chi tiết:
+
+| Resource | Route | Request body | Response | Khóa |
+|---|---|---|---|---|
+| Phiếu nhập | `/api/PhieuNhapCrud` | `PhieuNhapHeaderRequest` | `PhieuNhapResponse` | `string` |
+| Chi tiết phiếu nhập | `/api/ChiTietPhieuNhap` | `ChiTietPhieuNhapCrudRequest` | `ChiTietPhieuNhapCrudResponse` | `int` |
+| Phiếu điều chuyển | `/api/PhieuDieuChuyenCrud` | `PhieuDieuChuyenHeaderRequest` | `PhieuDieuChuyenResponse` | `string` |
+| Chi tiết điều chuyển | `/api/ChiTietDieuChuyen` | `ChiTietDieuChuyenCrudRequest` | `ChiTietDieuChuyenCrudResponse` | `int` |
+
+Transaction endpoints (tạo header và detail nguyên tử):
+
+| Nghiệp vụ | Route | Request | Response |
+|---|---|---|---|
+| Tạo phiếu nhập kèm chi tiết | `POST /api/PhieuNhap` | `PhieuNhapTransactionRequest` | `PhieuNhapTransactionResponse` |
+| Tạo phiếu điều chuyển kèm chi tiết | `POST /api/PhieuDieuChuyen` | `PhieuDieuChuyenTransactionRequest` | `PhieuDieuChuyenTransactionResponse` |
+
 > Route dùng đúng tên controller, bao gồm chữ hoa như bảng trên. Nên dùng đúng casing này ở frontend để tránh phụ thuộc vào cấu hình routing.
+
+### API xem phiếu kèm chi tiết
+
+Các endpoint aggregate trả về header, thông tin danh mục liên quan và toàn bộ detail của phiếu:
+
+| Nghiệp vụ | Route | Response |
+|---|---|---|
+| Xem phiếu nhập và chi tiết | `GET /api/PhieuNhap/{soPhieuNhap}` | `PhieuNhapInfoResponse` |
+| Xem phiếu điều chuyển và chi tiết | `GET /api/PhieuDieuChuyen/{maGiaoDich}` | `PhieuDieuChuyenInfoResponse` |
+
+Chi tiết nằm trong `chiTietPhieuNhaps` hoặc `chiTietDieuChuyens`; response detail có `id` và tên vật tư tương ứng. Endpoint trả `404` nếu không tìm thấy phiếu. Dùng các endpoint này cho màn hình xem chi tiết thay vì tải danh sách detail rồi lọc ở frontend.
 
 ### Bộ thao tác CRUD dùng chung
 
@@ -129,6 +156,45 @@ DELETE /api/<resource>/<id>
 ```
 
 Response `204` không có body.
+
+### CRUD mới cho phiếu và chi tiết
+
+Các route dưới đây dùng cùng bộ thao tác `GET`, `POST`, `PUT`, `DELETE` ở trên.
+
+#### `PhieuNhapCrud`
+
+- Route: `/api/PhieuNhapCrud`
+- Khóa: `soPhieuNhap` dạng `string`.
+- Request: `PhieuNhapHeaderRequest`.
+- Response: `PhieuNhapResponse`.
+- Các field request: `soPhieuNhap` (bắt buộc, tối đa 30), `ngayNhap`, `maChungTu`, `soDonHang`, `soHoaDon`, `phieuYeuCau`, `maNcc`, `maHopDong`, `maGiaoDich`, `maKhoHang`, `maKhoXuat`, `tenPhanXuong`, `maBoPhan`, `tenBoPhan`, `userTaoPo`, `nguoiLapPhieu`, `maCdgtPhieu`, `trangThaiPhieu`.
+- Các field string nullable áp dụng giới hạn độ dài tương ứng trong DTO transaction.
+
+#### `ChiTietPhieuNhap`
+
+- Route: `/api/ChiTietPhieuNhap`
+- Khóa: `id` dạng `int`, database tự sinh khi tạo.
+- Request: `ChiTietPhieuNhapCrudRequest`.
+- Response: `ChiTietPhieuNhapCrudResponse`, gồm thêm `id`.
+- Field chính: `maHang` (bắt buộc, tối đa 50), `soPhieuNhap` (tối đa 30), `dvt`, `soLuong`, `tkNo`, `tkCo`, `maPhi`, `donTrongThietKe`, `tyLeDonTrongThucTeThietKe`, `caSanXuat`, `maySanXuat`, `maCdgtVt`, `maLoi`, `tenLoi`, `soLenhSx`, `donHangGc`, `giaGc`, `tienGc`.
+
+#### `PhieuDieuChuyenCrud`
+
+- Route: `/api/PhieuDieuChuyenCrud`
+- Khóa: `maGiaoDich` dạng `string`.
+- Request: `PhieuDieuChuyenHeaderRequest`.
+- Response: `PhieuDieuChuyenResponse`.
+- Field request: `maGiaoDich` (bắt buộc, tối đa 30), `ngayChungTu`, `maKhachHang`, `nguoiThucHien`, `maKhoXuat` (bắt buộc, tối đa 20), `maKhoNhap` (bắt buộc, tối đa 20), `dienGiai`.
+
+#### `ChiTietDieuChuyen`
+
+- Route: `/api/ChiTietDieuChuyen`
+- Khóa: `id` dạng `int`, database tự sinh khi tạo.
+- Request: `ChiTietDieuChuyenCrudRequest`.
+- Response: `ChiTietDieuChuyenCrudResponse`, gồm thêm `id`.
+- Field chính: `donHang`, `maGiaoDich` (tối đa 30), `maVatTu` (bắt buộc, tối đa 50), `dvt`, `tonKho`, `soLuong`, `dvt2`, `soLuong2`, `gia`, `tien`, `giaDinhDanh`, `maNxTkNo`, `tkVatTuTkCo`, `phieuYeuCauNvl`, `ghiChu`.
+
+> Khi tạo detail riêng, phải gửi mã header đã tồn tại (`soPhieuNhap` hoặc `maGiaoDich`) và mã vật tư đã tồn tại (`maHang` hoặc `maVatTu`). Nếu muốn tạo header cùng nhiều detail nguyên tử, dùng transaction endpoint ở mục 5.
 
 ## 4. Request/response models
 
@@ -258,7 +324,7 @@ Các trường có dấu `?` là nullable/không bắt buộc. Giới hạn tron
 
 ## 5. Transaction models đã định nghĩa
 
-Các model dưới đây đã có trong Application nhưng **chưa có controller/API route public** trong source hiện tại. Frontend không thể gọi các chức năng này cho tới khi thêm controller map service.
+Các model dưới đây được dùng bởi transaction endpoint. Header và chi tiết được lưu trong cùng một database transaction; nếu một phần lỗi thì toàn bộ thao tác được rollback.
 
 ### 5.1 Phiếu nhập
 
@@ -314,7 +380,8 @@ Các model dưới đây đã có trong Application nhưng **chưa có controlle
 - Chi tiết bắt buộc: `maHang` (50), `soLuong` (`number`).
 - Các trường còn lại nullable theo `PhieuNhapHeaderRequest` và `ChiTietPhieuNhapRequest`.
 - Response model dự kiến: `{ "soPhieuNhap": "...", "chiTietIds": [1, 2] }`.
-- Service hiện ném `NotImplementedException`; chưa có endpoint.
+- Gọi bằng `POST /api/PhieuNhap`.
+- Response `201 Created`: `{ "soPhieuNhap": "...", "chiTietIds": [1, 2] }`.
 
 ### 5.2 Phiếu điều chuyển
 
@@ -375,7 +442,7 @@ DeleteAsync(TKey id, CancellationToken ct)
   -> Task<bool>
 ```
 
-`PagedResult<T>` gồm `items`, `total`, `page`, `size`. API hiện dùng service generic này cho 7 resource CRUD.
+`PagedResult<T>` gồm `items`, `total`, `page`, `size`. API hiện dùng service generic này cho các resource CRUD chính và bốn resource phiếu/detail.
 
 ### `IPhieuNhapTransactionService`
 
@@ -391,7 +458,7 @@ CreateAsync(PhieuDieuChuyenTransactionRequest request, CancellationToken ct)
   -> Task<PhieuDieuChuyenTransactionResponse>
 ```
 
-Hai interface transaction đã được đăng ký/triển khai ở tầng Application/Infrastructure nhưng chưa được controller gọi trực tiếp. Frontend chỉ nên tích hợp sau khi có route và nghiệp vụ hoàn chỉnh.
+Hai interface transaction đã được đăng ký/triển khai ở tầng Application/Infrastructure và được gọi bởi hai endpoint POST transaction ở mục 5.
 
 ## 8. Ghi chú tích hợp
 
@@ -400,4 +467,4 @@ Hai interface transaction đã được đăng ký/triển khai ở tầng Appli
 3. Cập nhật dùng `PUT` toàn bộ request model. Các trường nullable được phép gửi `null` để xóa giá trị nullable.
 4. Không tự suy đoán enum cho `loai...` hoặc `trangThai`; hiện source chỉ validate độ dài chuỗi, chưa khai báo enum.
 5. `GET /api/<resource>` không có filter/search/sort tùy chọn ngoài `page` và `size`.
-6. `PhieuNhap`, `PhieuDieuChuyen`, `ChiTietPhieuNhap`, `ChiTietDieuChuyen` chưa có endpoint CRUD public trong source hiện tại.
+6. Có thể dùng CRUD riêng ở mục 3 cho từng entity; dùng transaction POST ở mục 5 khi cần tạo header và nhiều detail nguyên tử.

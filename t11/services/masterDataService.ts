@@ -1,5 +1,5 @@
-import { API_CONFIG } from "@/services/apiConfig";
 import { MASTER_DATA_DEFINITIONS } from "@/lib/master-data-definitions";
+import { API_ROOT, ApiError as MasterDataApiError, requestJson } from "@/services/apiClient";
 import {
   MasterDataRequestMap,
   MasterDataResource,
@@ -7,57 +7,7 @@ import {
   PagedResult,
 } from "@/types/master-data";
 
-const configuredApiRoot = API_CONFIG.baseUrl.replace(/\/+$/, "");
-const API_ROOT =
-  /^https?:\/\//i.test(configuredApiRoot) &&
-  !/\/api$/i.test(configuredApiRoot)
-    ? `${configuredApiRoot}/api`
-    : configuredApiRoot;
-
-export class MasterDataApiError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-    public readonly fieldErrors: Record<string, string> = {}
-  ) {
-    super(message);
-    this.name = "MasterDataApiError";
-  }
-}
-
-async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, init);
-  if (response.status === 204) return undefined as T;
-
-  const contentType = response.headers.get("content-type") || "";
-  const body: unknown = contentType.includes("json")
-    ? await response.json()
-    : await response.text();
-
-  if (!response.ok) {
-    const problem =
-      typeof body === "object" && body !== null
-        ? (body as {
-            detail?: string;
-            title?: string;
-            errors?: Record<string, string[]>;
-          })
-        : undefined;
-    const fieldErrors = Object.fromEntries(
-      Object.entries(problem?.errors ?? {}).map(([key, messages]) => [
-        key,
-        messages.join(" "),
-      ])
-    );
-    throw new MasterDataApiError(
-      problem?.detail || problem?.title || "Không thể hoàn tất yêu cầu.",
-      response.status,
-      fieldErrors
-    );
-  }
-
-  return body as T;
-}
+export { MasterDataApiError };
 
 export async function getMasterDataPage<R extends MasterDataResource>(
   resource: R,

@@ -140,11 +140,12 @@ export type MasterDataResource = keyof MasterDataRequestMap;
 export type MasterDataField = {
   key: string;
   label: string;
-  type: "text" | "number" | "textarea";
+  type: "text" | "number" | "textarea" | "select";
   required?: boolean;
   maxLength?: number;
   relation?: MasterDataResource;
   navigationField?: string;
+  options?: Array<{ label: string; value: string }>;
 };
 
 export interface MasterDataDefinition {
